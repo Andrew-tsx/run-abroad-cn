@@ -284,7 +284,11 @@ function scoreOf(profile, p, status, softGaps, skillMatch) {
 
 /** 主入口：返回按 status 分组、组内按分数降序的结果。 */
 function matchAll(profile) {
-  const results = PATHWAYS.map((p) => checkPathway(profile, p));
+  // minDegStrict：学历写死在官方资格里的路径（如香港优才只收硕博），
+  // 不达标直接不参与匹配，也不进「暂时走不通」——列出来只会误导。
+  const results = PATHWAYS
+    .filter((p) => !(p.req?.minDegStrict && profile.degree < p.req.minDeg))
+    .map((p) => checkPathway(profile, p));
   const bucket = { eligible: [], close: [], stretch: [], blocked: [] };
   for (const r of results) bucket[r.status].push(r);
   for (const k of Object.keys(bucket)) {

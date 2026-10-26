@@ -23,6 +23,7 @@
   req: {
     age: [18, 30],                 // 年龄区间
     minDeg: DEG.bachelor,          // none/highschool/college/bachelor/master/phd
+    minDegStrict: true,            // 学历不达标时整条路径不参与匹配（如香港优才只收硕博）
     uniRank: 100,                  // 院校世界排名要求（50/100/200/500）
     gradWithin: 5,                 // 毕业几年内
     minEng: ENG.ielts55,           // none/daily/ielts55/ielts65/fluent
@@ -39,6 +40,7 @@
   difficulty: 3,                   // 1–5，办理难度
   notes: '实操要点、坑、和别的路径相比的优劣。',
   official: 'https://官网链接',      // 必填，且必须是政府官网
+  uniList: 'https://官方合资格大学名单（PDF）',  // 可选；学历达标时在卡片和详情页展示
 }
 ```
 

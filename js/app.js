@@ -560,6 +560,8 @@ function card(r, i = 0) {
 
       <div class="card-links">
         <a class="official" href="${fmt(detailHref(p.id))}">查看详细条件与流程 →</a>
+        ${p.uniList && lastProfile.degree >= DEG.master ? `
+        <a class="official secondary" href="${fmt(p.uniList)}" target="_blank" rel="noopener noreferrer">符合资格的大学</a>` : ''}
         <a class="official secondary" href="${p.official}" target="_blank" rel="noopener noreferrer">官网</a>
       </div>
     </article>`;

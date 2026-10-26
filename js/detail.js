@@ -22,6 +22,23 @@ function incomeRequirement(income) {
   return parts.join('；');
 }
 
+/**
+ * 合资格大学名单。学位必须由名单上的大学颁授时才展示，
+ * 让用户自己核对母校是否在列。最高学历不达标时（如本科看优才）路径
+ * 本就不该被推荐，也不再展示名单。
+ */
+function uniListSection(p, degree) {
+  if (!p.uniList) return '';
+  if (degree != null && degree < DEG.master) return '';
+  return `<section class="panel d-block">
+    <h2>符合资格的大学</h2>
+    <p class="notes">这条路的学位要求同时限定了颁授院校：必须由名单上的大学颁授。名单会调整，申请前先核对最新版本。</p>
+    <ul class="d-links">
+      <li><a href="${esc(p.uniList)}" target="_blank" rel="noopener noreferrer">符合资格的大学名单（官方 PDF）</a></li>
+    </ul>
+  </section>`;
+}
+
 /** 把 req 翻译成人话，逐条列出，而不是塞在一段话里 */
 function requirements(p) {
   const r = p.req || {};
@@ -59,7 +76,7 @@ function bullets(title, items, cls = '') {
   </section>`;
 }
 
-function render(p) {
+function render(p, degree = null) {
   document.title = `${p.name} · 润学导航`;
 
   const d = p.detail || {};
@@ -104,6 +121,8 @@ function render(p) {
       </table>
     </section>
 
+    ${uniListSection(p, degree)}
+
     ${list('申请步骤', d.steps)}
     ${bullets('需要准备的材料', d.docs)}
     ${bullets('容易踩的坑', d.pitfalls, 'd-warn')}
@@ -130,6 +149,8 @@ function render(p) {
   const back = document.querySelector('.back');
   const returnState = q.get('return');
   back.href = returnState ? `index.html?${returnState}` : 'index.html';
+  // return 里带着首页的表单状态，d 是最高学历；直接打开详情页时视为未知
+  const d = +new URLSearchParams(returnState || '').get('d');
 
   const id = q.get('id');
   const p = PATHWAYS.find((x) => x.id === id);
@@ -139,5 +160,5 @@ function render(p) {
     $$$('#body').innerHTML = '<div class="panel empty">链接可能已失效。<a href="index.html">回到首页重新筛选</a>。</div>';
     return;
   }
-  render(p);
+  render(p, Number.isNaN(d) ? null : d);
 })();
